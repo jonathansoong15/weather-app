@@ -39,8 +39,6 @@ const TodayWeatherSearchResultComponent = (props: Props) => {
           </Container>
         </>
       )}
-
-      {props.displayNotFoundError}
       {props?.displayNotFoundError && (
         <Alert variant="danger">
           <p>Not found.</p>

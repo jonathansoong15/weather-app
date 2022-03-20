@@ -14,7 +14,7 @@ const TodayWeatherPage = () => {
   const [searchHistory, setSearchHistory] = useState<Array<SearchHistoryItem>>(
     []
   );
-  const [notFoundError, setNotFoundError] = useState(false);
+  const [displayNotFoundError, setDisplayNotFoundError] = useState(false);
 
   const handleSearchSubmit = async (
     { city, country }: TodayWeatherSearchFormInterface,
@@ -26,13 +26,13 @@ const TodayWeatherPage = () => {
     });
 
     if (result?.cod === "404") {
-      setNotFoundError(true);
+      setDisplayNotFoundError(true);
       setData(null);
       return;
     }
 
     const timestamp = new Date().toString();
-    const transformedDate = {
+    const transformedData = {
       city: result.name,
       country: result.sys.country,
       weatherStatus: result.weather[0].main,
@@ -42,8 +42,8 @@ const TodayWeatherPage = () => {
       time: timestamp,
     };
 
-    setData(transformedDate);
-    setNotFoundError(false);
+    setData(transformedData);
+    setDisplayNotFoundError(false);
 
     if (skipAddIntoSearchHistory) return;
     setSearchHistory([
@@ -53,8 +53,7 @@ const TodayWeatherPage = () => {
   };
 
   const handleSearchHistoryDelete = (index: number) => {
-    const filteredList = searchHistory.filter((val, i) => i !== index);
-    setSearchHistory(filteredList);
+    setSearchHistory(searchHistory.filter((val, i) => i !== index));
   };
 
   return (
@@ -66,7 +65,7 @@ const TodayWeatherPage = () => {
         <TodayWeatherSearchComponent handleSearchSubmit={handleSearchSubmit} />
         <TodayWeatherSearchResultComponent
           data={data}
-          displayNotFoundError={notFoundError}
+          displayNotFoundError={displayNotFoundError}
         />
         <TodayWeatherSearchHistoryComponent
           data={searchHistory}
