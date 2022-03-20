@@ -1,43 +1,37 @@
 import React, { useState } from "react";
-import TodayWeatherSearchHistoryComponent, {
-  SearchHistoryData,
-} from "./components/today-weather-search-history.component";
+import TodayWeatherSearchHistoryComponent from "./components/today-weather-search-history.component";
 import TodayWeatherSearchResultComponent from "./components/today-weather-search-result.component";
-import TodayWeatherSearchComponent, {
-  TodayWeatherSearchFormInterface,
-} from "./components/today-weather-search.component";
+import TodayWeatherSearchComponent from "./components/today-weather-search.component";
 import { WeatherApiService } from "../../services/weather.api";
-
-interface SearchResult {
-  city: String;
-  country: String;
-  weatherStatus: String;
-  description: String;
-  temperature: String;
-  humidity: String;
-  time: String;
-}
+import {
+  SearchResult,
+  TodayWeatherSearchFormInterface,
+  SearchHistoryItem,
+} from "./today-weather.modal";
 
 const TodayWeatherPage = () => {
-  const [data, setData] = useState<SearchResult | null>(null);
-
-  const [searchHistory, setSearchHistory] = useState<Array<SearchHistoryData>>(
+  const [data, setData] = useState<SearchResult | null | undefined>(null);
+  const [searchHistory, setSearchHistory] = useState<Array<SearchHistoryItem>>(
     []
   );
+  const [notFoundError, setNotFoundError] = useState(false);
 
-  const handleSearchSubmit = async ({
-    city,
-    country,
-  }: TodayWeatherSearchFormInterface) => {
+  const handleSearchSubmit = async (
+    { city, country }: TodayWeatherSearchFormInterface,
+    skipAddIntoSearchHistory?: boolean
+  ) => {
     const result: any = await WeatherApiService.getCurrentWeather({
       cityName: city,
       countryCode: country,
     });
 
-    console.log(result);
+    if (result?.cod === "404") {
+      setNotFoundError(true);
+      setData(null);
+      return;
+    }
 
     const timestamp = new Date().toString();
-
     const transformedDate = {
       city: result.name,
       country: result.sys.country,
@@ -49,11 +43,18 @@ const TodayWeatherPage = () => {
     };
 
     setData(transformedDate);
+    setNotFoundError(false);
 
+    if (skipAddIntoSearchHistory) return;
     setSearchHistory([
       { city, country, searchTime: timestamp },
       ...searchHistory,
     ]);
+  };
+
+  const handleSearchHistoryDelete = (index: number) => {
+    const filteredList = searchHistory.filter((val, i) => i !== index);
+    setSearchHistory(filteredList);
   };
 
   return (
@@ -63,8 +64,17 @@ const TodayWeatherPage = () => {
           <h1>Today's Weather</h1>
         </div>
         <TodayWeatherSearchComponent handleSearchSubmit={handleSearchSubmit} />
-        {data && <TodayWeatherSearchResultComponent {...data} />}
-        <TodayWeatherSearchHistoryComponent data={searchHistory} />
+        <TodayWeatherSearchResultComponent
+          data={data}
+          displayNotFoundError={notFoundError}
+        />
+        <TodayWeatherSearchHistoryComponent
+          data={searchHistory}
+          handleSeachButtonClick={(data) => {
+            handleSearchSubmit(data, true);
+          }}
+          handleDeleteButtonClick={handleSearchHistoryDelete}
+        />
       </div>
     </>
   );

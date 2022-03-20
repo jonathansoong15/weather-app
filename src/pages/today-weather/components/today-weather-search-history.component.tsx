@@ -1,14 +1,15 @@
 import React from "react";
-import { Table } from "react-bootstrap";
-
-export interface SearchHistoryData {
-  city: String;
-  country: String;
-  searchTime: String;
-}
-
+import { Container, Table } from "react-bootstrap";
+import { TodayWeatherSearchFormInterface } from "../today-weather.modal";
+import { Search, Trash } from "react-bootstrap-icons";
+import { SearchHistoryItem } from "../today-weather.modal";
 interface Props {
-  data: Array<SearchHistoryData>;
+  data: Array<SearchHistoryItem>;
+  handleSeachButtonClick: ({
+    city,
+    country,
+  }: TodayWeatherSearchFormInterface) => void;
+  handleDeleteButtonClick: (index: number) => void;
 }
 
 const TodayWeatherSearchHistoryComponent = (props: Props) => {
@@ -19,6 +20,11 @@ const TodayWeatherSearchHistoryComponent = (props: Props) => {
       </div>
       <Table hover>
         <tbody>
+          {props.data.length === 0 && (
+            <Container className="text-center">
+              <span>No Record</span>
+            </Container>
+          )}
           {props.data.map((val, index) => {
             return (
               <tr>
@@ -27,8 +33,23 @@ const TodayWeatherSearchHistoryComponent = (props: Props) => {
                   {val.city}, {val.country}
                 </td>
                 <td>{val.searchTime}</td>
-                <td>Search</td>
-                <td>Delete</td>
+                <td
+                  onClick={() => {
+                    props.handleSeachButtonClick({
+                      city: val.city,
+                      country: val.country,
+                    });
+                  }}
+                >
+                  <Search style={{ cursor: "pointer" }} />
+                </td>
+                <td
+                  onClick={() => {
+                    props.handleDeleteButtonClick(index);
+                  }}
+                >
+                  <Trash style={{ cursor: "pointer" }} />
+                </td>
               </tr>
             );
           })}

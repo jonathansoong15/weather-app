@@ -1,38 +1,51 @@
 import React from "react";
-import { Container, Row } from "react-bootstrap";
-import LabelValuePair from "../../../components/LabelValuePair.component";
+import { Container, Row, Alert } from "react-bootstrap";
+import { SearchResult } from "../today-weather.modal";
+import { LabelValuePair } from "../../../components";
 
 interface Props {
-  city: String;
-  country: String;
-  weatherStatus: String;
-  description: String;
-  temperature: String;
-  humidity: String;
-  time: String;
+  data?: SearchResult | null;
+  displayNotFoundError?: boolean;
 }
 
 const TodayWeatherSearchResultComponent = (props: Props) => {
   return (
     <div className="container mt-5">
-      <span className="font-weight-light text-secondary">
-        {props.city}, {props.country}
-      </span>
-      <h1>{props.weatherStatus}</h1>
-      <Container className="px-0">
-        <Row>
-          <LabelValuePair label="Description:" value={props.description} />
-        </Row>
-        <Row>
-          <LabelValuePair label="Temperature:" value={props.temperature} />
-        </Row>
-        <Row>
-          <LabelValuePair label="Humidity:" value={props.humidity} />
-        </Row>
-        <Row>
-          <LabelValuePair label="Time:" value={props.time} />
-        </Row>
-      </Container>
+      {props?.data && (
+        <>
+          <span className="font-weight-light text-secondary">
+            {props.data.city}, {props.data.country}
+          </span>
+          <h1>{props.data.weatherStatus}</h1>
+          <Container className="px-0">
+            <Row>
+              <LabelValuePair
+                label="Description:"
+                value={props.data.description}
+              />
+            </Row>
+            <Row>
+              <LabelValuePair
+                label="Temperature:"
+                value={props.data.temperature}
+              />
+            </Row>
+            <Row>
+              <LabelValuePair label="Humidity:" value={props.data.humidity} />
+            </Row>
+            <Row>
+              <LabelValuePair label="Time:" value={props.data.time} />
+            </Row>
+          </Container>
+        </>
+      )}
+
+      {props.displayNotFoundError}
+      {props?.displayNotFoundError && (
+        <Alert variant="danger">
+          <p>Not found.</p>
+        </Alert>
+      )}
     </div>
   );
 };
