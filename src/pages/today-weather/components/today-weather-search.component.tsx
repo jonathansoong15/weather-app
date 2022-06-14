@@ -13,7 +13,7 @@ const TodayWeatherSearchComponent = (props: Props) => {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
-    if (city === "" && country === "") return;
+    if (!city && !country) return;
 
     props.handleSearchSubmit({ city, country });
   };
