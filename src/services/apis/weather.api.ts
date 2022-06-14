@@ -1,4 +1,4 @@
-import { ENV_CONFIG } from "../utils/constants";
+import { ENV_CONFIG } from "../../utils/constants";
 
 export interface GetCurrentWeatherInterface {
   cityName: String;

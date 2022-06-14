@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TodayWeatherSearchHistoryComponent from "./components/today-weather-search-history.component";
 import TodayWeatherSearchResultComponent from "./components/today-weather-search-result.component";
 import TodayWeatherSearchComponent from "./components/today-weather-search.component";
-import { WeatherApiService } from "../../services/weather.api";
+import { WeatherApiService } from "../../services/apis/weather.api";
 import {
   SearchResult,
   TodayWeatherSearchFormInterface,
