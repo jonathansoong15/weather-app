@@ -1,4 +1,4 @@
-const API_KEY = "4a46171ca0ae17f27086ea1de0de86d6";
+import { ENV_CONFIG } from "../utils/constants";
 
 export interface GetCurrentWeatherInterface {
   cityName: String;
@@ -11,7 +11,7 @@ export const WeatherApiService = {
     countryCode,
   }: GetCurrentWeatherInterface) => {
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${cityName},,${countryCode}&appid=${API_KEY}`
+      `https://api.openweathermap.org/data/2.5/weather?q=${cityName},,${countryCode}&appid=${ENV_CONFIG.openWeatherApiKey}`
     );
 
     return response.json();
